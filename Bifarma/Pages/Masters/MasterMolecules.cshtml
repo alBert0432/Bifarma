@@ -1,0 +1,187 @@
+﻿@page
+@using System.Data
+@using Bifarma.Pages.Masters.MasterMolecules;
+@model MoleculesModel
+@{
+    ViewData["Title"] = "Master Molecules";
+}
+
+<div class="container-body">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item font-weight-bold">Master Molecules</li>
+                    </ol>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-lg-6">
+                    <h4>Master Molecules</h4>
+                </div>
+                <div class="col-lg-6" style="text-align:right">
+                    <button type="button" class="btn btn-primary font-weight-bold" data-toggle="modal" data-target="#ModalAddUser">
+                        Add Molecules
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">List Molecules</div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="myTable" class="table" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th style="text-align:center;">IdMolecules</th>
+                                    <th style="text-align:center;">MoleculesName</th>
+                                    <th style="text-align:center;">MolDescription</th>
+                                    <th style="text-align:center;">isActive</th>
+                                    <th style="text-align:center;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.listMol)
+                                {
+                                    <tr>
+                                        <td>@item.idMolecules</td>
+                                        <td>@item.MoleculesName</td>
+                                        <td>@item.MolDescription</td>
+                                        <td style="text-align:center;">
+                                            @if (string.Equals(item.isActive, "1", StringComparison.Ordinal))
+                                            {
+                                                <span class="">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="">Inactive</span>
+                                            }
+                                        </td>
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-warning btn-sm font-weight-bold" data-toggle="modal" data-target="#EditUser" onclick="lemparEdit('@item.idMolecules', '@item.MoleculesName', '@item.MolDescription', '@item.isActive')">
+                                                Edit
+                                            </button>
+                                            <button type="button" class="btn btn-danger btn-sm font-weight-bold" data-toggle="modal" data-target="#DeleteUser" onclick="lemparDelete('@item.idMolecules')">
+                                                Delete
+                                            </button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Molecules Modal -->
+<div class="modal fade" id="ModalAddUser" tabindex="-1" aria-labelledby="ModalAddUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="ModalAddUserLabel">Add Molecule</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="addMoleculeForm" method="post" asp-page-handler="AddMol">
+                    <div class="form-group">
+                        <label for="MoleculeName">Molecule Name</label>
+                        <input type="text" class="form-control" id="MoleculeName" name="MoleculeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="MolDescription">Description</label>
+                        <textarea class="form-control" id="MolDescription" name="MolDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="isActive">Active</label>
+                        <select class="form-control" id="isActive" name="isActive" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="addMoleculeForm" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Molecules Modal -->
+<div class="modal fade" id="EditUser" tabindex="-1" aria-labelledby="EditUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="EditUserLabel">Edit Molecule</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editMoleculeForm" method="post" asp-page-handler="EditMol">
+                    <input type="hidden" id="editMoleculeId" name="idMolecules">
+                    <div class="form-group">
+                        <label for="editMoleculeName">Molecule Name</label>
+                        <input type="text" class="form-control" id="editMoleculeName" name="MoleculeName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editMolDescription">Description</label>
+                        <textarea class="form-control" id="editMolDescription" name="MolDescription" rows="3" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="editIsActive">Active</label>
+                        <select class="form-control" id="editIsActive" name="isActive" required>
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="editMoleculeForm" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Molecule Modal -->
+<div class="modal fade" id="DeleteUser" tabindex="-1" aria-labelledby="DeleteUserLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="DeleteUserLabel">Delete Molecule</h5>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete this molecule?</p>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteMoleculeForm" method="post" asp-page-handler="DeleteMol">
+                    <input type="hidden" id="deleteMoleculeId" name="idMolecules">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" form="deleteMoleculeForm" class="btn btn-danger">Delete</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function lemparEdit(idMol, MolName, MolDesc, MolActive) {
+        $('#editMoleculeId').val(idMol);
+        $('#editMoleculeName').val(MolName);
+        $('#editMolDescription').val(MolDesc);
+        $('#editIsActive').val(MolActive);
+    }
+
+    function lemparDelete(id) {
+        $('#deleteMoleculeId').val(id);
+    }
+</script>
